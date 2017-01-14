@@ -1,0 +1,3 @@
+name = Updater
+description = Facilitates updating Eva plugins.
+version = 0.1.0
