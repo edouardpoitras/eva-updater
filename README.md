@@ -24,23 +24,27 @@ You can start Eva with the --rollback flag in order to undo the last applied upd
 
 The following functions are made available by this plugin (see source code for more details):
 
-    update_all_plugins(save_backup=True, disabled=False, reboot=False) # Updates all plugins.
-    update_plugin(plugin_name, save_backup=True) # Update a single plugin.
-    is_unknown(plugin_id) # Check if a plugin is in 'Unknown' state.
-    is_updated(plugin_id) # Check if a plugin is in 'Updated' state.
-    is_behind(plugin_id) # Check if a plugin is in 'Behind' state.
-    set_state(plugin_id, state) # Sets the state of plugin.
-    get_state(plugin_id) # Gets the state of a plugin.
-    update_check() # What runs periodically to check for updates.
-    backup() # Backs up the entire plugin directory to the configured rollback directory.
-    rollback(reboot=True) # Performs the rollback.
-    rollback_available() # Checks if a rollback is available.
+```python
+update_all_plugins(save_backup=True, disabled=False, reboot=False) # Updates all plugins.
+update_plugin(plugin_name, save_backup=True) # Update a single plugin.
+is_unknown(plugin_id) # Check if a plugin is in 'Unknown' state.
+is_updated(plugin_id) # Check if a plugin is in 'Updated' state.
+is_behind(plugin_id) # Check if a plugin is in 'Behind' state.
+set_state(plugin_id, state) # Sets the state of plugin.
+get_state(plugin_id) # Gets the state of a plugin.
+update_check() # What runs periodically to check for updates.
+backup() # Backs up the entire plugin directory to the configured rollback directory.
+rollback(reboot=True) # Performs the rollback.
+rollback_available() # Checks if a rollback is available.
+```
 
 Available plugin states are defined as follows:
 
-    UPDATED = 'Updated'
-    BEHIND = 'Behind'
-    UNKNOWN = 'Unknown'
+```python
+UPDATED = 'Updated'
+BEHIND = 'Behind'
+UNKNOWN = 'Unknown'
+```
 
 ## Configuration
 
