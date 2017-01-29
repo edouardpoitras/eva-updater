@@ -76,15 +76,15 @@ def update_check():
     collection.insert(update_data)
     log.info('Update check complete')
 
-def get_state(plugin_name):
+def get_state(plugin_id):
     collection = client.eva.updates
-    data = collection.find_one({'name': plugin_name})
+    data = collection.find_one({'name': plugin_id})
     if data is None or not 'state' in data: return UNKNOWN
     return data['state']
 
-def set_state(plugin_name, state):
+def set_state(plugin_id, state):
     collection = client.eva.updates
-    collection.find_one_and_update({'name': plugin_name}, {'$set': {'state': UPDATED}})
+    collection.find_one_and_update({'name': plugin_id}, {'$set': {'state': UPDATED}})
 
 def is_behind(plugin_id):
     return get_state(plugin_id) == BEHIND
@@ -95,20 +95,20 @@ def is_updated(plugin_id):
 def is_unknown(plugin_id):
     return get_state(plugin_id) == UNKNOWN
 
-def update_plugin(plugin_name, save_backup=True):
+def update_plugin(plugin_id, save_backup=True):
     """
     Assumes latest plugin version is in master branch.
     """
-    log.info('Updating plugin: %s' %plugin_name)
-    plugin = conf['plugins'][plugin_name]
+    log.info('Updating plugin: %s' %plugin_id)
+    plugin = conf['plugins'][plugin_id]
     # Ensure plugin has a git repo.
     if not plugin['git']:
-        log.warning('Can not update plugin %s: not a git repo' %plugin_name)
+        log.warning('Can not update plugin %s: not a git repo' %plugin_id)
         return
     plugin_dir = get_plugin_directory()
     # Ensure plugin exists in plugin directory.
-    if not os.path.isdir(plugin_dir + '/' + plugin_name):
-        log.error('Plugin %s not found in plugin directory: %s' %(plugin_name, plugin_dir))
+    if not os.path.isdir(plugin_dir + '/' + plugin_id):
+        log.error('Plugin %s not found in plugin directory: %s' %(plugin_id, plugin_dir))
         return
     if save_backup:
         # Delete old rollback directory.
@@ -117,8 +117,8 @@ def update_plugin(plugin_name, save_backup=True):
             shutil.rmtree(ROLLBACK_DIRECTORY)
         backup()
     pull_repo(plugin['path'])
-    set_state(plugin_name, UPDATED)
-    log.info('Plugin updated: %s' %plugin_name)
+    set_state(plugin_id, UPDATED)
+    log.info('Plugin updated: %s' %plugin_id)
 
 def update_all_plugins(save_backup=True, disabled=False, reboot=False):
     log.info('Updating all plugins')
@@ -128,10 +128,10 @@ def update_all_plugins(save_backup=True, disabled=False, reboot=False):
             log.info('Removing existing rollback directory')
             shutil.rmtree(ROLLBACK_DIRECTORY)
         backup()
-    for plugin_name in conf['plugins']:
-        if not plugin_enabled(plugin_name) and not disabled:
-            log.info('Skipping disabled plugin: %s' %plugin_name)
+    for plugin_id in conf['plugins']:
+        if not plugin_enabled(plugin_id) and not disabled:
+            log.info('Skipping disabled plugin: %s' %plugin_id)
             continue
-        update_plugin(plugin_name, save_backup=False)
+        update_plugin(plugin_id, save_backup=False)
     log.info('All plugins updated')
     if reboot: restart()
